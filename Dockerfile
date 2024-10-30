@@ -1,5 +1,5 @@
 # Stage 1: Build Stage
-FROM node:18-alpine AS build
+FROM node:18 AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build-tailwind
 
 # Stage 2: Production Stage
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 

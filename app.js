@@ -36,10 +36,17 @@ app.use(async (req, res, next) => {
   // Check if a session ID is present
   if (!req.cookies.sessionID) {
     res.redirect('/auth');
+    return
   }
 
   // Check if the session ID is valid
   const sessionID = req.cookies.sessionID;
+
+  // If no session ID is present, redirect to the login page
+  if (!sessionID) {
+    res.redirect('/auth');
+    return
+  }
 
   const session = await Session.findOne({
     where: {
@@ -49,6 +56,7 @@ app.use(async (req, res, next) => {
 
   if (!session) {
     res.redirect('/auth');
+    return
   }
 
   // Attach the session to the request
