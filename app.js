@@ -8,6 +8,7 @@ var Session = require('./models/session');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+var apiRoutes = require('./routes/api');
 
 // Set up the database
 var sequelize = require('./models/index');
@@ -50,11 +51,15 @@ app.use(async (req, res, next) => {
     res.redirect('/auth');
   }
 
+  // Attach the session to the request
+  req.session = session;
+
   next();
 });
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/api', apiRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -9,7 +9,11 @@ class OpenAIError extends Error {
     }
 }
 
-async function createClient() {
+function getAssistantID() {
+    return process.env.OPENAI_ASSISTANT_ID;
+}
+
+function createClient() {
     try {
         return new OpenAI({
             apiKey: process.env.OPENAI_TOKEN,
@@ -69,6 +73,7 @@ async function queryBot(openAIClient, threadID, assistantID, userMessage) {
 }
 
 module.exports = {
+    getAssistantID,
     createClient,
     createThread,
     queryBot,
