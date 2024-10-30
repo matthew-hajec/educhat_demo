@@ -7,15 +7,15 @@
         
         <!-- Chat Container -->
         <div class="bg-white rounded-lg shadow p-4 space-y-4 h-96 overflow-y-auto">
-            <!-- User Message (Right) -->
-            <div class="flex justify-end">
+            <!-- This is hidden, but it's the template for a user message, and mainly here for the TailWindCSS build process -->
+            <div class="flex justify-end" style="display: none;">
                 <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
                     <p>Hello, this is a user message!</p>
                 </div>
             </div>
             
-            <!-- Bot Message (Left) -->
-            <div class="flex justify-start">
+            <!-- This is hidden, but it's the template for the bot's response, and mainly here for the TailWindCSS build process -->
+            <div class="flex justify-start" style="display: none;">
                 <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
                     <p>Hi there! I'm the bot responding to your message.</p>
                 </div>
