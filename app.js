@@ -3,9 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const bcrypt = require('bcrypt');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var authRouter = require('./routes/auth');
 
 var app = express();
 
@@ -19,8 +20,26 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// // Middleware to check if the user is authenticated
+// app.use((req, res, next) => {
+//   const saltRounds = 12;
+//   // Hardcoded password hash, why not? I'd like to see them try
+//   const passwordHash = '$2b$12$C761s.cBMtO.r04w8PGuousp.4GMo22VkIEPEj7mk1.YjzXjOB7Ey';
+
+//   // Check if the password is correct
+//   const isCorrect = await new Promise((resolve, reject) => {
+//     bcrypt.compare('password', passwordHash, (err, result) => {
+//       if (err) {
+//         reject(err);
+//       } else {
+//         resolve(result);
+//       }
+//     });
+//   }
+// })
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
