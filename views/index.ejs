@@ -1,6 +1,42 @@
-<%- include("layout/start", {title: "Home"}) %>
+<%- include("layout/start", {title: "Test Chat"}) %>
 
-<h1 class="text-xl">Home</h1>
-<p>Welcome to the home page!</p>
+<div class="h-screen flex flex-col items-center bg-gray-50">
+    <div class="w-full max-w-md p-4">
+        <!-- Chat Title -->
+        <h1 class="text-4xl font-bold text-center text-blue-500 mb-4">Test Chat</h1>
+        
+        <!-- Chat Container -->
+        <div class="bg-white rounded-lg shadow p-4 space-y-4 h-96 overflow-y-auto">
+            <!-- User Message (Right) -->
+            <div class="flex justify-end">
+                <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
+                    <p>Hello, this is a user message!</p>
+                </div>
+            </div>
+            
+            <!-- Bot Message (Left) -->
+            <div class="flex justify-start">
+                <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
+                    <p>Hi there! I'm the bot responding to your message.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Input Form -->
+        <form class="mt-4 flex">
+            <input 
+                type="text" 
+                placeholder="Type your message..."
+                class="flex-grow p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button 
+                type="submit"
+                class="bg-blue-500 text-white p-3 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+                Send
+            </button>
+        </form>
+    </div>
+</div>
 
 <%- include("layout/end") %>
