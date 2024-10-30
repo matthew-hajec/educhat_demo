@@ -11,3 +11,5 @@ const Session = sequelize.define('Session', {
         allowNull: false
     }
 });
+
+module.exports = Session;

@@ -1,5 +1,9 @@
 var express = require('express');
 var bcrypt = require('bcrypt');
+var crypto = require('crypto');
+
+var openAI = require('../services/openai');
+var Session = require('../models/session');
 
 var router = express.Router();
 
@@ -11,7 +15,6 @@ router.get('/', (req, res, next) => {
 // POST /auth
 router.post('/', async (req, res, next) => {
   const password = req.body.password;
-  console.log(password);
   
   // Hardcoded password hash, why not? I'd like to see them try
   const passwordHash = '$2b$12$C761s.cBMtO.r04w8PGuousp.4GMo22VkIEPEj7mk1.YjzXjOB7Ey';
@@ -27,11 +30,30 @@ router.post('/', async (req, res, next) => {
     });
   });
 
-  if (isCorrect) {
-    res.send('You are authenticated');
-  } else {
+  if (!isCorrect) {
+    res.status(401);
     res.send('You are not authenticated');
+    return;
   }
+
+  // Generate a big, cryptographically secure random number
+  const randomNumber = crypto.randomBytes(32).toString('hex');
+  
+  // First, create an OpenAI client
+  const openAIClient = await openAI.createClient();
+
+  // Now create a thread
+  const threadID = await openAI.createThread(openAIClient);
+
+  // Finally, create a session
+  await Session.create({
+    sessionID: randomNumber,
+    openAIThreadID: threadID
+  });
+
+  // Give the user their session ID as a secure cookie
+  res.cookie('sessionID', randomNumber, { httpOnly: true, secure: true });
+  res.redirect('/');
 })
 
 module.exports = router;

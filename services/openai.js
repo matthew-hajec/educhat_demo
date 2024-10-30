@@ -1,9 +1,21 @@
+var { OpenAI } = require('openai');
+
 // standardize error handling for bot interactions
 class OpenAIError extends Error {
     constructor(originalError) {
         super(originalError.message, { cause: originalError });
         this.name = 'OpenAIError';
         this.stack = originalError.stack;
+    }
+}
+
+async function createClient() {
+    try {
+        return new OpenAI({
+            apiKey: process.env.OPENAI_TOKEN,
+        });
+    } catch(e) {
+        throw new OpenAIError(e);
     }
 }
 
@@ -57,6 +69,7 @@ async function queryBot(openAIClient, threadID, assistantID, userMessage) {
 }
 
 module.exports = {
+    createClient,
     createThread,
     queryBot,
     OpenAIError,

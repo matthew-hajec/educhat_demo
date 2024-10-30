@@ -3,10 +3,16 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const bcrypt = require('bcrypt');
+
+var Session = require('./models/session');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
+
+// Set up the database
+var sequelize = require('./models/index');
+sequelize.sync();
+
 
 var app = express();
 
@@ -20,23 +26,32 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// // Middleware to check if the user is authenticated
-// app.use((req, res, next) => {
-//   const saltRounds = 12;
-//   // Hardcoded password hash, why not? I'd like to see them try
-//   const passwordHash = '$2b$12$C761s.cBMtO.r04w8PGuousp.4GMo22VkIEPEj7mk1.YjzXjOB7Ey';
+app.use(async (req, res, next) => {
+  // Skip authentication for the auth route
+  if (req.path === '/auth') {
+    return next();
+  }
 
-//   // Check if the password is correct
-//   const isCorrect = await new Promise((resolve, reject) => {
-//     bcrypt.compare('password', passwordHash, (err, result) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         resolve(result);
-//       }
-//     });
-//   }
-// })
+  // Check if a session ID is present
+  if (!req.cookies.sessionID) {
+    res.redirect('/auth');
+  }
+
+  // Check if the session ID is valid
+  const sessionID = req.cookies.sessionID;
+
+  const session = await Session.findOne({
+    where: {
+      sessionID
+    }
+  });
+
+  if (!session) {
+    res.redirect('/auth');
+  }
+
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
