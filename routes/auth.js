@@ -61,4 +61,23 @@ router.post('/', async (req, res, next) => {
   }
 })
 
+// POST /auth/logout
+router.post('/logout', async (req, res, next) => {
+  try {
+    // Delete the session
+    await Session.destroy({
+      where: {
+        sessionID: req.cookies.sessionID
+      }
+    });
+
+    // Clear the session cookie
+    res.clearCookie('sessionID');
+    res.redirect('/auth');
+  } catch(e) {
+    // Send errors to the default error handler
+    next(e);
+  }
+});
+
 module.exports = router;

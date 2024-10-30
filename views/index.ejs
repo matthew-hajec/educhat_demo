@@ -2,8 +2,20 @@
 
 <div class="h-screen flex flex-col items-center bg-gray-50">
     <div class="w-full max-w-md p-4">
-        <!-- Chat Title -->
-        <h1 class="text-4xl font-bold text-center text-blue-500 mb-4">Test Chat</h1>
+        <!-- Chat Title and Logout Button -->
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-4xl font-bold text-blue-500">Test Chat</h1>
+            
+            <!-- Logout Button -->
+            <form action="/auth/logout" method="POST">
+                <button 
+                    type="submit" 
+                    class="bg-red-500 text-white p-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                >
+                    Logout
+                </button>
+            </form>
+        </div>
         
         <!-- Chat Container -->
         <div id="chat-container" class="bg-white rounded-lg shadow p-4 space-y-4 h-96 overflow-y-auto">
