@@ -10,6 +10,11 @@
                 class="mt-6 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
             Back to Home
         </button>
+
+        <!-- Error message -->
+        <% if (typeof error !== 'undefined') { %>
+            <p class="mt-4 text-red-500 max-w-50"><%= error %></p>
+        <% } %>
     </div>
 </div>
 

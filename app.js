@@ -26,8 +26,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Force authentication for all routes except /auth
 app.use(async (req, res, next) => {
-  // Skip authentication for the auth route
   if (req.path === '/auth') {
     return next();
   }
