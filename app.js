@@ -33,10 +33,19 @@ app.use(async (req, res, next) => {
     return next();
   }
 
+  // Function for reply with unauthorized
+  const unauthorized = () => {
+    if (req.path.startsWith('/api')) {
+      res.status(401).send({message: 'Unauthorized'});
+    } else {
+      res.redirect('/auth');
+    }
+  }
+
   // Check if a session ID is present
   if (!req.cookies.sessionID) {
-    res.redirect('/auth');
-    return
+    unauthorized();
+    return;
   }
 
   // Check if the session ID is valid
@@ -44,8 +53,8 @@ app.use(async (req, res, next) => {
 
   // If no session ID is present, redirect to the login page
   if (!sessionID) {
-    res.redirect('/auth');
-    return
+    unauthorized();
+    return;
   }
 
   const session = await Session.findOne({
@@ -55,8 +64,8 @@ app.use(async (req, res, next) => {
   });
 
   if (!session) {
-    res.redirect('/auth');
-    return
+    unauthorized();
+    return;
   }
 
   // Attach the session to the request
