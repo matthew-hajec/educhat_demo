@@ -1,7 +1,7 @@
 <%- include("layout/start", {title: "Test Chat"}) %>
 
 <div class="h-screen flex flex-col items-center bg-gray-50">
-    <div class="w-full max-w-md p-4">
+    <div class="w-full max-w-md p-4 mb-4">
         <!-- Chat Title and Logout Button -->
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-4xl font-bold text-blue-500">Test Chat</h1>
@@ -50,6 +50,11 @@
             </button>
         </form>
     </div>
+
+    <p>Prompt tokens: <span id="prompt-tokens">0</span></p>
+    <p>Completion tokens: <span id="completion-tokens">0</span></p>
+    <p>Total tokens: <span id="total-tokens">0</span></p>
+    <p>Total Price <span id="total-price">$0</span></p>
 </div>
 
 <%- include("layout/end") %>

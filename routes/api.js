@@ -26,11 +26,16 @@ router.post('/message', async (req, res, next) => {
         const assistantID = openAI.getAssistantID();
 
         // Query the bot
-        const responseText = await openAI.queryBot(openAIClient, threadID, assistantID, message);
+        const assistantResponse = await openAI.queryBot(openAIClient, threadID, assistantID, message);
+
+        const responseMessage = JSON.parse(assistantResponse.textContent)
+
+        console.log(assistantResponse.run.usage)
 
         // Create a mapping of the response
         const response = {
-            message: responseText
+            message: responseMessage,
+            usage: assistantResponse.run.usage,
         };
 
         res.send(response);

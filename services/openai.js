@@ -62,7 +62,11 @@ async function queryBot(openAIClient, threadID, assistantID, userMessage) {
                 throw new Error('Assistant did not respond');
             }
 
-            return JSON.parse(lastMessage.content[0].text.value)
+            return {
+                run: run,
+                message: lastMessage,
+                textContent: lastMessage.content[0].text.value,
+            }
         } else {
             // if the run is not complete, throw an error
             throw new Error(`Run did not complete successfully. Status: ${run.status}`);

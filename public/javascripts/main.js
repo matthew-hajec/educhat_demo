@@ -1,3 +1,5 @@
+const COST_PER_TOKEN = .150/1_000_000; // current price for gpt-4o-mini
+
 function createUserMessageElement(message) {
     const containerClasses = ["flex", "justify-end"]
     const innerClasses = ["bg-blue-500", "text-white", "rounded-lg", "p-3", "max-w-xs"]
@@ -62,7 +64,16 @@ async function queryBot(message) {
         throw new Error("Failed to query bot: No message in response");
     }
 
-    return responseJSON.message;
+    if (!responseJSON.usage) {
+        throw new Error("Failed to query bot: No usage in response");
+    }
+
+    const expectedUsageKeys = ["prompt_tokens", "completion_tokens", "total_tokens"];
+    if (!expectedUsageKeys.every((key) => key in responseJSON.usage)) {
+        throw new Error("Failed to query bot: Invalid usage in response");
+    }
+
+    return responseJSON;
 }
 
 function constructBotMessage(response) {
@@ -77,6 +88,27 @@ function constructBotMessage(response) {
     }
 
     return message;
+}
+
+function updateTokenUsage(prompt, completion, total) {
+    const promptTokensElem = document.getElementById("prompt-tokens");
+    const completionTokensElem = document.getElementById("completion-tokens");
+    const totalTokensElem = document.getElementById("total-tokens");
+
+    // Convert the token counts to integers
+    const promptTokens = parseInt(promptTokensElem.innerText) + prompt;
+    const completionTokens = parseInt(completionTokensElem.innerText) + completion;
+    const totalTokens = parseInt(totalTokensElem.innerText) + total;
+
+    // Update the token counts
+    promptTokensElem.innerText = promptTokens;
+    completionTokensElem.innerText = completionTokens;
+    totalTokensElem.innerText = totalTokens;
+
+    // Calculate the total price
+    const totalPrice = totalTokens * COST_PER_TOKEN;
+    const totalPriceElem = document.getElementById("total-price");
+    totalPriceElem.innerText = totalPrice.toFixed(10);
 }
 
 async function main() {
@@ -106,17 +138,28 @@ async function main() {
             return;
         };
 
-        if (botResponse.bypass_attempt_detected) {
+        const assistantResponse = botResponse.message;
+
+        if (assistantResponse.bypass_attempt_detected) {
             alert("A bypass attempt was detected. Your teacher will not be pleased.");
         }
 
-        const botMessage = constructBotMessage(botResponse);
-
-        console.log(botMessage);
+        const botMessage = constructBotMessage(assistantResponse);
 
         // Create the bot message element
         const botMessageElem = createBotMessageElement(botMessage);
         chatContainerElem.appendChild(botMessageElem);
+
+        // Update the token usage
+        const {
+            prompt_tokens: promptTokens,
+            completion_tokens: completionTokens,
+            total_tokens: totalTokens
+        } = botResponse.usage;
+
+        console.log(botResponse)
+
+        updateTokenUsage(promptTokens, completionTokens, totalTokens);
     });
 }
 
